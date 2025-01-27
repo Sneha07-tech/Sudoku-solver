@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sudoku-grid {
+            border: 3px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .cell {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            border: 1px solid #999;
+            padding: 0;
+        }
+        
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 24px;
+            padding: 0;
+            margin: 0;
+            outline: none;
+        }
+
+        /* Bold borders for 3x3 boxes */
+        tr:nth-child(3n) td {
+            border-bottom: 3px solid black;
+        }
+        
+        td:nth-child(3n) {
+            border-right: 3px solid black;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .initial-number {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sudoku Game</h1>
+        
+        <div class="controls">
+            <button onclick="newGame()">New Game</button>
+            <button onclick="clearGrid()">Clear</button>
+        </div>
+
+        <table class="sudoku-grid">
+            <tbody>
+                <script>
+                    document.write(Array(9).fill().map(() => `
+                        <tr>
+                            ${Array(9).fill().map(() => `
+                                <td class="cell">
+                                    <input type="text" maxlength="1" pattern="[1-9]">
+                                </td>
+                            `).join('')}
+                        </tr>
+                    `).join(''));
+                </script>
+            </tbody>
+        </table>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        const puzzle = [
+            [5,3,0,0,7,0,0,0,0],
+            [6,0,0,1,9,5,0,0,0],
+            [0,9,8,0,0,0,0,6,0],
+            [8,0,0,0,6,0,0,0,3],
+            [4,0,0,8,0,3,0,0,1],
+            [7,0,0,0,2,0,0,0,6],
+            [0,6,0,0,0,0,2,8,0],
+            [0,0,0,4,1,9,0,0,5],
+            [0,0,0,0,8,0,0,7,9]
+        ];
+
+        function newGame() {
+            const cells = document.querySelectorAll('.cell input');
+            cells.forEach((input, index) => {
+                const row = Math.floor(index / 9);
+                const col = index % 9;
+                const value = puzzle[row][col];
+                
+                input.value = value || '';
+                input.disabled = value !== 0;
+                input.classList.toggle('initial-number', value !== 0);
+            });
+            
+            document.getElementById('status').textContent = '';
+        }
+
+        function clearGrid() {
+            const cells = document.querySelectorAll('.cell input');
+            cells.forEach(input => {
+                if (!input.disabled) {
+                    input.value = '';
+                }
+            });
+            document.getElementById('status').textContent = '';
+        }
+
+        // Input validation
+        document.querySelectorAll('.cell input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^1-9]/g, '');
+            });
+        });
+
+        // Start new game on load
+        window.onload = newGame;
+    </script>
+</body>
+</html> 
